@@ -1,0 +1,39 @@
+.cards{
+    flex-wrap: wrap;
+    display: inline-flex;
+    margin: 10px;
+}
+.cards a{
+    text-decoration: none;
+}
+.card{
+    background: #fff;
+    height: 100px;
+    align-items: center;
+    text-align: center;
+    padding:3px;
+    margin: 10px;
+    width: 200px;
+    color: #fff;
+    border-radius: 20px;
+    transition: width 4s,height 4s;
+    box-shadow: 0px 0px 10px 1px #1d1b31;
+}
+
+.card:hover{
+    width: 150px;
+    height: 150px;
+}
+
+.card_title{
+    height: 50px;
+    background: #1d1b31;
+    width: 100%;
+    text-align: center;
+    padding: 10px 0 0 0;
+    border-radius: 17px;
+}
+.card_body{
+    color: #000;
+    padding: 6px;
+}

@@ -1,0 +1,115 @@
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  }
+  
+  /* Modal Content */
+  .modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    border-radius: 5px;
+  }
+  
+  /* The Close Button */
+  .close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .texto{
+    font-size: 20pt;
+  }
+  .modal-content .modal-body{
+    background: #f5f5f5;
+    margin-bottom: 10px;
+    margin-top: 10px;
+  }
+  .modal-content .modal-body fieldset{
+    width: 100%;
+    border-radius: 5px;
+  }
+  fieldset .form-row{
+    display: flex;
+    padding: 5px;
+  }
+hr{
+  margin: 10px;
+}
+  .form-row .inputform{
+    width: 100%;
+    margin: 10px;
+  }
+  .form-row .inputform input{
+    width: 100%;
+    height: 40px;
+    border: 1px solid rgb(111, 108, 108);    
+    padding: 10px;
+    border-radius: 10px;
+  }
+  .form-row .inputform select{   
+      width: 100%;
+      height: 40px;
+      border-radius: 10px;
+      line-height: 10;  
+  }
+  .form-row .inputform input:hover{
+    width: 100%;
+    height: 40px;
+    border: 1px solid #ccc;    
+    padding: 10px;
+    border-radius: 10px;
+  }
+
+ .modal-footer .right {
+    text-align: end;
+}
+
+.modal-footer .primary{
+  background: #0854e1 !important;
+  border: none;
+}
+.modal-footer .secondary{
+  background: #434446 !important;
+  border: none;
+}
+.modal-footer .cancelar{
+  background: #1d1b31;
+  border: none;
+}
+.modal-footer .success{
+  background: #038033 !important;
+  border: none;
+}
+.modal-footer .danger{
+  background: #6e0c0c !important;
+  border: none;
+}
+  @media only screen and (max-width:48rem)  {
+    fieldset .form-row{
+      display: block;
+      margin-right: 12px;
+    }
+  
+    
+  }
