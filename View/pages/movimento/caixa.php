@@ -49,9 +49,9 @@ error_reporting(0);
                             <td><?=$value->getDescricao()?></td>   
                             <?php $data=explode(" ",$value->getDataCaixa())?>
                             <td><?=implode("/", array_reverse(explode("-",$data[0])))." ".$data[1]?></td>                                
-                            <td><?=$value->getStatusCaixa()?'Ativo':'Inativo'?></td>                        
-                            <td><button class="myButton primary" onclick="editar('<?=$value->getIdCaixa()?>')">!</button></td>
-                            <td><button class="myButton danger" onclick="deletar('<?=$value->getIdCaixa()?>')">X</button></td>
+                            <td><?=$value->getStatusCaixa()?'Ativo':'Efetivado'?></td>                        
+                            <td><button class="myButton primary" onclick="inserir('<?=$value->getIdCaixa()?>')">!</button></td>
+                            <td><button class="myButton danger" onclick="visualizar('<?=$value->getIdCaixa()?>')">@</button></td>
 
                         </tr>
                        
@@ -117,35 +117,119 @@ error_reporting(0);
 
 </div>
 
+
+
+
+<!-- The Modal pagamento -->
+<div id="myPagamento" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content" style="width:40% !important;">
+    <span class="close">&times;</span>
+    <p>Pagamento de Caixa</p>
+    <div class="modal-body">
+        <form action="" name="myForm" id="myForm">
+            <fieldset>
+                <div class="form-row">                   
+                    <div class="inputform">
+                        <label for="">Dinheiro</label>
+                        <input class="texto" type="hidden" name="tipoDinheiro" value="dinheiro" id="tipoDinheiro">
+                        <input class="texto" type="number" name="valorDinheiro" id="valorDinheiro">
+                    </div>
+                    <div class="inputform">
+                    <label for="">Crédito</label>
+                    <input class="texto" type="hidden" name="tipoCredito" value="Credito" id="tipoCredito">
+                        <input class="texto" type="number" name="valorCredito" id="valorCredito" >
+                    </div>                   
+                </div>
+            </fieldset>   
+            <fieldset>
+                <div class="form-row">                   
+                    <div class="inputform">
+                        <label for="">Pix</label>
+                        <input class="texto" type="hidden" name="tipoPix" value="Pix" id="tipoPix">
+                        <input class="texto" type="number" name="valorPix" id="valorPix">
+                    </div>
+
+                    <div class="inputform">
+                    <label for="">Débito</label>      
+                    <input class="texto" type="hidden" name="tipoDebito" value="Debito" id="tipoDebito">
+                        <input class="texto" type="number" name="valorDebito" id="valorDebito" >
+                    </div>
+                   
+                </div>
+            </fieldset>   
+            
+                 
+
+        </form>
+    </div>
+    <hr>
+    <div class="modal-footer">
+             <div class="form-row right">
+                <button type="submit" id="btn_add" class="myButton success">Adicionar</button>
+                <button id="btnClose" onclick="fechaModal('myPagamento');" class="myButton cancelar">Cancelar</button>
+             </div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- The Modal -->
+<div id="modalDetalhes" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content" style="width:80% !important;">
+    <span class="close">&times;</span>
+    <p>Dados do Caixa</p>
+    <div class="modal-body" id="lista">
+                <?php var_dump($this->dadosBuscados);?>
+    </div>
+    <hr>
+    <div class="modal-footer">
+             <div class="form-row right">
+                
+                <button id="btnClose" onclick="fechaModal('modalDetalhes');" class="myButton cancelar">Fechar</button>
+             </div>
+    </div>
+  </div>
+
+</div>
+
 <!-- The Modal Historico -->
 
 <?php 
 
 $array=@$_SESSION['bicos'];
-var_dump($array);
-if(count($array)!=0){
-    require_once "historicoBico.php";
-}else{
+// var_dump($array);
+// echo is_null($array);
+if(!is_null($array)){    
+    if(count($array)!=0){
+        require_once ("historicoBico.php");
+    }else{
     $this->updateCaixa();
+    }
 }
-    ?>
+
+?>
 
 
-
-
-<script src="<?=ROTA_JS?>/datatable.js"></script>
-<script src="<?=ROTA_JS?>/modal.js"></script>
 <?php require_once PATH_TOPO."rodape.php";
 ?>
 
-<script>
 
-function openModal()
+<script>
+function openModal(nome)
     {
-        var modal = document.getElementById("myModal");
+        var modal = document.getElementById(nome);
         modal.style.display='block';
     }
-    
+function fechaModal(nome){    
+    var modal = document.getElementById(nome);
+    modal.style.display = "none";
+    }
+
     $('#btn_add').click(function(e){
         e.preventDefault();
         let id=document.getElementById('idCaixa').value;
@@ -191,72 +275,66 @@ function openModal()
             });
     });
 
-   function editar(id){
-       $.ajax({
-           url:"<?=ROTA_GERAL?>/Movimento/findCaixa/"+id,
-           method:'POST',
-           dataType:'JSON',    
-           success:function(resposta){   
-            //    console.log(resposta);
-            $("#nomeProduto").val(resposta.nomeProduto);
-            $("#valorProduto").val(resposta.valorProduto);
-            $("#idCategoria").val(resposta.idCategoria);
-            $("#idProduto").val(resposta.idProduto);
-            $("#idProdutos").val(resposta.idProduto);
-             $("#btn_add").text("Atualizar");
-            openModal();
-           }      
-          
-       })
-   }
-   btnclose.onclick = function() {
-            $("#nomeProduto").val('');
-            $("#valorProduto").val('');
-            $("#idCategoria").val('');
-            $("#idProduto").val('');
-            $("#idProdutos").val('');
-             $("#btn_add").text("Adicionar");
-             modal.style.display = "none";
-   }
+    function inserir(id){
+        openModal('myPagamento');
+        // $.ajax({
+        //         url:'<=ROTA_GERAL?>/Movimento/addPagamento/'+id,
+        //         method:'POST',
+        //         dataType:'JSON',               
+        //         success:function(resposta){
+        //             tableDetalhes(resposta);
+                 
+        //         }
+        //     });
+        
+    }
+    function visualizar(id){
+        
+        $.ajax({
+                url:'<?=ROTA_GERAL?>/Movimento/findMovimento/'+id,
+                method:'POST',
+                dataType:'JSON',               
+                success:function(resposta){
+                    tableDetalhes(resposta);
+                    openModal('modalDetalhes');
+                }
+            });
+        
+    }
 
-   function deletar(id)
-   {
-        Swal.fire({
-            title: 'Deseja Deletar?',
-            text: "voce esta deletando o registro de código "+ id ,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Sim, deletar!'
-            }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url:"<?=ROTA_GERAL?>/Movimento/deletarCaixa/"+id,
-                    method:"POST",
-                    dataType:'json',
-                    success:function(resposta){
-                        if(resposta==true)
-                        {
-                            Swal.fire(
-                            'Deletado!',
-                            'dado deletado com sucesso.',
-                            'success'
-                            )
-                            window.location.reload();
-                        }else{
-                            Swal.fire(
-                            'Não Deletado!',
-                            'dado não deletado .',
-                            'danger'
-                            )
-                        }
-                    }
-                });
-                
-            }
-            })
-   }
+    function tableDetalhes(dados){
+        html='';
+        html+='<table>';
+        html+='<thead>';
+        html+='<tr>';
+        html+='<th>Bico</th>';
+        html+='<th>Data</th>';       
+        html+='<th>Produto</th>';
+        html+='<th>Valor</th>';
+        html+='<th>Aberto</th>';
+        html+='<th>Fechado</th>';
+        html+='<th>Total R$</th>';
+        html+='</tr>';
+        html+='</thead>';
+        html+='<tbody>';
+        dados.forEach(element => {          
+        html+='<tr>';
+        html+='<td>'+element['nomeBico']+'</td>';
+        html+='<td>'+element['dataMovimento']+'</td>';       
+        html+='<td>'+element['nomeProduto']+'</td>';
+        html+='<td>'+element['valorProduto']+'</td>';
+        html+='<td>'+element['qtdoAberto']+'</td>';
+        html+='<td>'+element['qtdoFechado']+'</td>';
+        html+='<td>'+(element['valorProduto']*(element['qtdoFechado']-element['qtdoAberto'])).toLocaleString('pt-BR')+'</td>';
+        
+        html+='</tr>';
+        });
+        html+='</tbody>';
+        html+='</table>';
+
+        $('#lista').html(html);
+    }
+  
 </script>
 
 
@@ -267,8 +345,12 @@ function openModal()
     $(document).ready(function(){
         let session = "<?= !empty($this->verifica)?'SIM':'NAO'?>";
         if(session=='SIM'){
-        var modal = document.getElementById("modalHistorico");
-        modal.style.display='block';
+        openModal("modalHistorico");        
         }
     });
+    
 </script>
+
+
+<script src="<?=ROTA_JS?>/datatable.js"></script>
+<script src="<?=ROTA_JS?>/modal.js"></script>

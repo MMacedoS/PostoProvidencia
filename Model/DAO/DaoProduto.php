@@ -36,7 +36,7 @@ class DaoProduto implements iDaoModeCrud{
         $dados=[];
         try {
            $operacao = $this->instanciaConexaoAtiva->prepare($sqlStmt);         
-           $operacao->execute();
+          
            if($operacao->execute())
            {
                while ($rs = $operacao->fetchObject(ProdutoModel::class)) {

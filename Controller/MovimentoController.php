@@ -78,6 +78,52 @@ class  MovimentoController extends Controller
       
     }
 
+    public function findMovimento($id)
+    {
+        $array=[];
+        $PersitenciaMovimento = new DaoMovimento();
+        $this->dadosBuscados=$PersitenciaMovimento->getAllMovimentos($id);
+        foreach($this->dadosBuscados as $key=> $value)
+        {
+            array_push($array,$PersitenciaMovimento->jsonSerialize($value));
+        }
+        // var_dump($array);
+        echo json_encode($array);
+    }
+
+    public function addPagamento()
+    {         
+        $PersitenciaPagamento = new DaoPagamento();
+
+        $dinheiro = new PagamentoModel();
+        $dinheiro->setValorPagamento($_POST['valorDinheiro']);
+        $dinheiro->setTipoPagamento($_POST['tipoDinheiro'])); 
+        $dinheiro->setIdCaixa(intval($_POST['idCaixa']));
+        $retorno=$PersitenciaPagamento->create($dinheiro);
+
+        $credito = new PagamentoModel();
+        $credito->setValorPagamento($_POST['valorCredito']);
+        $credito->setTipoPagamento($_POST['tipoCredito'])); 
+        $credito->setIdCaixa(intval($_POST['idCaixa']));
+        $retorno=$PersitenciaPagamento->create($credito);
+
+        $debito = new PagamentoModel();
+        $debito->setValorPagamento($_POST['valorDebito']);
+        $debito->setTipoPagamento($_POST['tipoDebito'])); 
+        $debito->setIdCaixa(intval($_POST['idCaixa']));
+        $retorno=$PersitenciaPagamento->create($debito);
+
+        $pix = new PagamentoModel();
+        $pix->setValorPagamento($_POST['valorPix']);
+        $pix->setTipoPagamento($_POST['tipoPix'])); 
+        $pix->setIdCaixa(intval($_POST['idCaixa']));
+        $retorno=$PersitenciaPagamento->create($pix);
+       
+        echo json_encode($retorno);
+      
+    }
+    
+
     
 }
 

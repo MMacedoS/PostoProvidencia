@@ -125,7 +125,9 @@ class DaoHistoricoBico implements iDaoModeCrud
 
      }
 
-
+    public function buscaMovimento($id){
+        
+    }
 
      private function getNewIdHistoricoBico(){
         $sqlStmt = "SELECT MAX(idHistoricoBico) AS id FROM {$this->tabela}";
