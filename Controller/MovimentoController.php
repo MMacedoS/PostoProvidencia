@@ -92,38 +92,90 @@ class  MovimentoController extends Controller
     }
 
     public function addPagamento()
-    {         
+    {      
+        if(!empty($_POST['valorDinheiro']) && !empty($_POST['valorCredito']) && !empty($_POST['valorDebito']) && !empty($_POST['valorPix'])){   
         $PersitenciaPagamento = new DaoPagamento();
 
         $dinheiro = new PagamentoModel();
         $dinheiro->setValorPagamento($_POST['valorDinheiro']);
-        $dinheiro->setTipoPagamento($_POST['tipoDinheiro'])); 
-        $dinheiro->setIdCaixa(intval($_POST['idCaixa']));
+        $dinheiro->setTipoPagamento($_POST['tipoDinheiro']); 
+        $dinheiro->setIdCaixa(intval($_POST['idCaixaPagamento']));
         $retorno=$PersitenciaPagamento->create($dinheiro);
 
         $credito = new PagamentoModel();
         $credito->setValorPagamento($_POST['valorCredito']);
-        $credito->setTipoPagamento($_POST['tipoCredito'])); 
-        $credito->setIdCaixa(intval($_POST['idCaixa']));
+        $credito->setTipoPagamento($_POST['tipoCredito']); 
+        $credito->setIdCaixa(intval($_POST['idCaixaPagamento']));
         $retorno=$PersitenciaPagamento->create($credito);
 
         $debito = new PagamentoModel();
         $debito->setValorPagamento($_POST['valorDebito']);
-        $debito->setTipoPagamento($_POST['tipoDebito'])); 
-        $debito->setIdCaixa(intval($_POST['idCaixa']));
+        $debito->setTipoPagamento($_POST['tipoDebito']); 
+        $debito->setIdCaixa(intval($_POST['idCaixaPagamento']));
         $retorno=$PersitenciaPagamento->create($debito);
 
         $pix = new PagamentoModel();
         $pix->setValorPagamento($_POST['valorPix']);
-        $pix->setTipoPagamento($_POST['tipoPix'])); 
-        $pix->setIdCaixa(intval($_POST['idCaixa']));
+        $pix->setTipoPagamento($_POST['tipoPix']); 
+        $pix->setIdCaixa(intval($_POST['idCaixaPagamento']));
         $retorno=$PersitenciaPagamento->create($pix);
        
         echo json_encode($retorno);
-      
+        }else{
+            echo json_encode("Os dados não podem ser vaziios");
+        }
+    }
+
+    public function buscaPagamento($id)
+    {
+        $array=[];
+        $PersitenciaPagamento = new DaoPagamento();
+        $this->dadosBuscados=$PersitenciaPagamento->findPagamentos($id);
+       
+        if($this->dadosBuscados){
+        foreach($this->dadosBuscados as $key=> $value)
+        {
+            array_push($array,$PersitenciaPagamento->jsonSerialize($value));
+        }
+    }
+        // var_dump($array);
+        echo json_encode($array);
     }
     
+    public function upPagamento()
+    {      
+        if(!empty($_POST['valorDinheiro']) && !empty($_POST['valorCredito']) && !empty($_POST['valorDebito']) && !empty($_POST['valorPix'])){   
+        $PersitenciaPagamento = new DaoPagamento();
 
+        $dinheiro = new PagamentoModel();
+        $dinheiro->setValorPagamento($_POST['valorDinheiro']);
+        $dinheiro->setTipoPagamento($_POST['tipoDinheiro']); 
+        $dinheiro->setIdCaixa(intval($_POST['idCaixaPagamento']));
+        $retorno=$PersitenciaPagamento->update($dinheiro);
+
+        $credito = new PagamentoModel();
+        $credito->setValorPagamento($_POST['valorCredito']);
+        $credito->setTipoPagamento($_POST['tipoCredito']); 
+        $credito->setIdCaixa(intval($_POST['idCaixaPagamento']));
+        $retorno=$PersitenciaPagamento->update($credito);
+
+        $debito = new PagamentoModel();
+        $debito->setValorPagamento($_POST['valorDebito']);
+        $debito->setTipoPagamento($_POST['tipoDebito']); 
+        $debito->setIdCaixa(intval($_POST['idCaixaPagamento']));
+        $retorno=$PersitenciaPagamento->update($debito);
+
+        $pix = new PagamentoModel();
+        $pix->setValorPagamento($_POST['valorPix']);
+        $pix->setTipoPagamento($_POST['tipoPix']); 
+        $pix->setIdCaixa(intval($_POST['idCaixaPagamento']));
+        $retorno=$PersitenciaPagamento->update($pix);
+       
+        echo json_encode($retorno);
+        }else{
+            echo json_encode("Os dados não podem ser vaziios");
+        }
+    }
     
 }
 

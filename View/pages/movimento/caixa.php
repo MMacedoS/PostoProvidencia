@@ -128,18 +128,20 @@ error_reporting(0);
     <span class="close">&times;</span>
     <p>Pagamento de Caixa</p>
     <div class="modal-body">
-        <form action="" name="myForm" id="myForm">
+        <form action="" name="myFormPagamento" id="myFormPagamento">
             <fieldset>
                 <div class="form-row">                   
                     <div class="inputform">
+                    <input class="texto" type="hidden" name="idCaixaPagamento"  id="idCaixaPagamento">
+                    <input class="texto" type="hidden" name="acao"  id="acao">
                         <label for="">Dinheiro</label>
-                        <input class="texto" type="hidden" name="tipoDinheiro" value="dinheiro" id="tipoDinheiro">
-                        <input class="texto" type="number" name="valorDinheiro" id="valorDinheiro">
+                        <input class="texto" type="hidden" name="tipoDinheiro" value="Dinheiro" id="tipoDinheiro">
+                        <input class="texto" type="number" required name="valorDinheiro" id="valorDinheiro">
                     </div>
                     <div class="inputform">
                     <label for="">Crédito</label>
                     <input class="texto" type="hidden" name="tipoCredito" value="Credito" id="tipoCredito">
-                        <input class="texto" type="number" name="valorCredito" id="valorCredito" >
+                        <input class="texto" type="number" required name="valorCredito" id="valorCredito" >
                     </div>                   
                 </div>
             </fieldset>   
@@ -148,13 +150,13 @@ error_reporting(0);
                     <div class="inputform">
                         <label for="">Pix</label>
                         <input class="texto" type="hidden" name="tipoPix" value="Pix" id="tipoPix">
-                        <input class="texto" type="number" name="valorPix" id="valorPix">
+                        <input class="texto" type="number" required name="valorPix" id="valorPix">
                     </div>
 
                     <div class="inputform">
                     <label for="">Débito</label>      
                     <input class="texto" type="hidden" name="tipoDebito" value="Debito" id="tipoDebito">
-                        <input class="texto" type="number" name="valorDebito" id="valorDebito" >
+                        <input class="texto" type="number" required name="valorDebito" id="valorDebito" >
                     </div>
                    
                 </div>
@@ -167,7 +169,7 @@ error_reporting(0);
     <hr>
     <div class="modal-footer">
              <div class="form-row right">
-                <button type="submit" id="btn_add" class="myButton success">Adicionar</button>
+                <button type="submit" id="btn_addPagamento" class="myButton success">Adicionar</button>
                 <button id="btnClose" onclick="fechaModal('myPagamento');" class="myButton cancelar">Cancelar</button>
              </div>
     </div>
@@ -276,17 +278,82 @@ function fechaModal(nome){
     });
 
     function inserir(id){
-        openModal('myPagamento');
-        // $.ajax({
-        //         url:'<=ROTA_GERAL?>/Movimento/addPagamento/'+id,
-        //         method:'POST',
-        //         dataType:'JSON',               
-        //         success:function(resposta){
-        //             tableDetalhes(resposta);
-                 
-        //         }
-        //     });
+        limpa();
+        $('#idCaixaPagamento').val(id);
         
+        $.ajax({
+                url:'<?=ROTA_GERAL?>/Movimento/buscaPagamento/'+id,
+                method:'POST',
+                dataType:'JSON',               
+                success:function(resposta){
+                   
+                   if(resposta.length>0)
+                   {$("#btn_addPagamento").text("Atualizar");
+                    $("#acao").val("Atualizar");
+                   }else{$("#btn_addPagamento").text("Adicionar");
+                    $("#acao").val('Cadastrar');
+                   }
+                    resposta.forEach(element => {
+                        switch (element['tipoPagamento']) {
+                        case 'Dinheiro':
+                            $("#valorDinheiro").val(element['valorPagamento']);
+                            break;
+                            case 'Credito':
+                                $("#valorCredito").val(element['valorPagamento']);
+                            break;
+                            case 'Debito':
+                                $("#valorDebito").val(element['valorPagamento']);
+                            break;
+                            case 'Pix':
+                                $("#valorPix").val(element['valorPagamento']);
+                            break;
+                        default:
+                            break;
+                    }
+                  
+                    });
+                    
+                  
+                    openModal('myPagamento');
+                 
+                }
+            });
+        
+    }
+    $('#btn_addPagamento').click(function(e){
+        e.preventDefault();
+        let acao = $("#acao").val();
+        if(acao=='Cadastrar'){          
+        $.ajax({
+                url:'<?=ROTA_GERAL?>/Movimento/addPagamento',
+                method:'POST',
+                dataType:'JSON',
+                data:$('#myFormPagamento').serialize(),
+                success:function(resposta){
+                    alertaTempo(resposta, '2000');
+                }
+            });
+        }else
+        {
+            $.ajax({
+                url:'<?=ROTA_GERAL?>/Movimento/upPagamento',
+                method:'POST',
+                dataType:'JSON',
+                data:$('#myFormPagamento').serialize(),
+                success:function(resposta){
+                    alertaTempo(resposta, '2000');
+                }
+            });
+        }
+               
+    });
+
+    function limpa()
+    {
+        $("#valorDinheiro").val("");
+        $("#valorCredito").val("");
+        $("#valorDebito").val("");
+        $("#valorPix").val("");
     }
     function visualizar(id){
         
@@ -303,6 +370,7 @@ function fechaModal(nome){
     }
 
     function tableDetalhes(dados){
+        total=0;
         html='';
         html+='<table>';
         html+='<thead>';
@@ -326,9 +394,14 @@ function fechaModal(nome){
         html+='<td>'+element['qtdoAberto']+'</td>';
         html+='<td>'+element['qtdoFechado']+'</td>';
         html+='<td>'+(element['valorProduto']*(element['qtdoFechado']-element['qtdoAberto'])).toLocaleString('pt-BR')+'</td>';
-        
+        total+=element['valorProduto']*(element['qtdoFechado']-element['qtdoAberto']);
         html+='</tr>';
+        
         });
+        html+='<tr>';
+        html+='<td colspan="5"><center><b>Soma da Venda de todos os Bicos</b></center></td>';
+        html+='<td colspan="2"><center><b>'+(total).toLocaleString('pt-BR')+'</b></center></td>';
+        html+='</tr>';
         html+='</tbody>';
         html+='</table>';
 

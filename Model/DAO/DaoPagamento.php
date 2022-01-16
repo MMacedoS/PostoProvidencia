@@ -39,7 +39,7 @@ class DaoPagamento implements iDaoModeCrud
         $id = $this->getNewIdPagamento();
         $operacao="INSERT INTO {$this->tabela} set idCaixa=:idcaixa, tipoPagamento=:tipo,valorPagamento=:valor,idPagamento=:id";
         try {
-            $operacao->$this->instanciaConexaoAtiva->prepare($operacao);
+            $operacao=$this->instanciaConexaoAtiva->prepare($operacao);
             $operacao->bindValue(':idcaixa',$idCaixa, PDO::PARAM_INT);
             $operacao->bindValue(':valor',$valorPagamento,PDO::PARAM_STR);
             $operacao->bindValue(':tipo',$tipoPagamento,PDO::PARAM_STR);
@@ -66,15 +66,12 @@ class DaoPagamento implements iDaoModeCrud
         $idCaixa=$objeto->getIdCaixa();
         $tipoPagamento=$objeto->getTipoPagamento();
         $valorPagamento=$objeto->getValorPagamento();
-        $id = $objeto->getIdPagamento();
-        $operacao="UPDATE {$this->tabela} set idCaixa=:idcaixa, tipoPagamento=:tipo,valorPagamento=:valor WHERE idPagamento=:id";
+        $operacao="UPDATE {$this->tabela} set tipoPagamento=:tipo,valorPagamento=:valor WHERE idCaixa=:idcaixa and tipoPagamento=:tipo";
         try {
-            $operacao->$this->instanciaConexaoAtiva->prepare($operacao);
+            $operacao=$this->instanciaConexaoAtiva->prepare($operacao);
             $operacao->bindValue(':idcaixa',$idCaixa, PDO::PARAM_INT);
             $operacao->bindValue(':valor',$valorPagamento,PDO::PARAM_STR);
-            $operacao->bindValue(':tipo',$tipoPagamento,PDO::PARAM_STR);
-            $operacao->bindValue(':id',$id,PDO::PARAM_STR);
-            
+            $operacao->bindValue(':tipo',$tipoPagamento,PDO::PARAM_STR);            
             if($operacao->execute()){
                 if($operacao->rowCount()>0){                   
                     return "Pagemento do caixa ".$idCaixa." Atualizado com Sucesso";
@@ -116,7 +113,28 @@ class DaoPagamento implements iDaoModeCrud
         }
     }
 
-    
+    public function findPagamentos($id)
+    {
+        $sqlStmt = "SELECT * FROM {$this->tabela} where idCaixa='$id'";
+        $dados=[];
+        try {
+           $operacao = $this->instanciaConexaoAtiva->prepare($sqlStmt);         
+           $operacao->execute();
+           if($operacao->execute())
+           {
+               while ($rs = $operacao->fetchObject(PagamentoModel::class)) {
+                $dados[] = $rs;
+            }
+           }
+           if(count($dados)>0){
+            return $dados;
+           }
+           return false;
+           
+        } catch( PDOException $excecao ){
+           return $excecao->getMessage();
+        }
+    }   
 
     private function getNewIdPagamento(){
         $sqlStmt = "SELECT MAX(idPagamento) AS id FROM {$this->tabela}";
@@ -146,7 +164,7 @@ class DaoPagamento implements iDaoModeCrud
                  'idPagamento' =>$object->getIdPagamento(),
                  'idCaixa' =>$object->getIdCaixa(),
                  'valorPagamento' =>$object->getValorPagamento(),
-                 'dataPagamento' =>$this->invertedata($object->geteDataPagamento()),
+                 'dataPagamento' =>$this->invertedata($object->getDataPagamento()),
                  'tipoPagamento' =>$object->getTipoPagamento(),
                 
              ];

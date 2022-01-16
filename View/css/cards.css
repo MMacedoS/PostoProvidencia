@@ -37,3 +37,16 @@
     color: #000;
     padding: 6px;
 }
+.card_title.vermelho {
+    background: #7e2525;
+}
+.card_title.azul {
+    background: #0f7095;
+}
+.card_title.verde {
+    background: #0b5425de;
+}
+
+.card_title.laranja {
+    background: #cb5009;
+}

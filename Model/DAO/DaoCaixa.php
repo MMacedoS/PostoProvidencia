@@ -33,7 +33,7 @@ class DaoCaixa implements iDaoModeCrud{
      }
      
      public function getAll(){
-        $sqlStmt = "SELECT * from {$this->tabela}";
+        $sqlStmt = "SELECT * from {$this->tabela} order by idCaixa desc";
         $dados=[];
         try {
            $operacao = $this->instanciaConexaoAtiva->prepare($sqlStmt);         
