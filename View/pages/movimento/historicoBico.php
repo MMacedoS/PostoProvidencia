@@ -15,7 +15,7 @@
                     <div class="inputform">
                     <label for="">Bico</label>                        
                         <input class="texto" type="text" name="idCaixas" id="idCaixas" value="<?=@$array[0]->getNomeBico()?>" disabled >
-                        <input class="texto" type="text" name="idBico" id="idBico" value="<?=@$array[0]->getIdBico()?>" >
+                        <input class="texto" type="hidden" name="idBico" id="idBico" value="<?=@$array[0]->getIdBico()?>" >
                     </div>
                    
                 </div>

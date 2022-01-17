@@ -79,7 +79,7 @@ error_reporting(0);
                 <div class="form-row">
                    
                     <div class="inputform">
-                        <label for="">Caixa</label>
+                        <label for="">Nome do Caixa</label>
                         <input class="texto" type="text" name="nomeCaixa" id="nomeCaixa">
                     </div>
                     <div class="inputform">
@@ -90,14 +90,10 @@ error_reporting(0);
                    
                 </div>
             </fieldset>   
-            <fieldset>
                 <div class="form-row">
                     <div class="inputform">
-                        <label for="">Status</label>
-                        <select class="texto" name="statusCaixa" id="statusCaixa">
-                           <option value="1">Ativo</option>
-                           <option value="0">Inativo</option>
-                        </select>
+                      
+                        <input type="hidden" value="1" name="statusCaixa" id="statusCaixa">
                     </div>
                                        
                 </div>
@@ -205,14 +201,11 @@ error_reporting(0);
 
 $array=@$_SESSION['bicos'];
 // var_dump($array);
-// echo is_null($array);
-if(!is_null($array)){    
+echo is_null($array);
+   
     if(count($array)!=0){
         require_once ("historicoBico.php");
-    }else{
-    $this->updateCaixa();
     }
-}
 
 ?>
 
@@ -393,20 +386,23 @@ function fechaModal(nome){
         html+='<td>'+element['valorProduto']+'</td>';
         html+='<td>'+element['qtdoAberto']+'</td>';
         html+='<td>'+element['qtdoFechado']+'</td>';
-        html+='<td>'+(element['valorProduto']*(element['qtdoFechado']-element['qtdoAberto'])).toLocaleString('pt-BR')+'</td>';
-        total+=element['valorProduto']*(element['qtdoFechado']-element['qtdoAberto']);
+        html+='<td>'+(element['valorProduto']*element['totalBico']).toLocaleString('pt-BR')+'</td>';
+        total+=element['valorProduto']*(element['totalBico']);
         html+='</tr>';
+        
         
         });
         html+='<tr>';
         html+='<td colspan="5"><center><b>Soma da Venda de todos os Bicos</b></center></td>';
-        html+='<td colspan="2"><center><b>'+(total).toLocaleString('pt-BR')+'</b></center></td>';
+        html+='<td colspan="2"><center><b> R$ '+(total).toLocaleString('pt-BR')+'</b></center></td>';
         html+='</tr>';
         html+='</tbody>';
         html+='</table>';
 
         $('#lista').html(html);
     }
+  
+
   
 </script>
 
@@ -416,7 +412,7 @@ function fechaModal(nome){
 
 <script>
     $(document).ready(function(){
-        let session = "<?= !empty($this->verifica)?'SIM':'NAO'?>";
+        let session = "<?=$this->historico?>";
         if(session=='SIM'){
         openModal("modalHistorico");        
         }

@@ -19,9 +19,9 @@ class DaoCaixa implements iDaoModeCrud{
            $operacao->bindValue(":id", $id, PDO::PARAM_INT);
            $operacao->execute();
            $getRow = $operacao->fetch(PDO::FETCH_OBJ);
-           $descricao = $getRow->descricao;          
+          
            $objeto = new CaixaModel();
-           $objeto->setDescricao($descricao);
+           $objeto->setDescricao($getRow->descricao);
            $objeto->setStatusCaixa($getRow->statusCaixa);
            $objeto->setDataCaixa($getRow->dataCaixa);
            $objeto->setIdCaixa($id);
@@ -93,7 +93,7 @@ class DaoCaixa implements iDaoModeCrud{
             if($operacao->execute())
             {
                 if($operacao->rowCount() > 0){
-                    return "Caixa ".$descricao." atualizada com Sucesso";
+                    return "Caixa ".$statusCaixa." atualizada com Sucesso";
                  } else {
                     return false;
                  }

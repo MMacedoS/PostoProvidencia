@@ -11,6 +11,8 @@ class HomeController extends Controller{
     }
 
     public function index(){
+        // echo 10054.52-4;
+        // die;
         $this->home('home');
       
     }

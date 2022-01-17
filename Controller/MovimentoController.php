@@ -20,13 +20,35 @@ class  MovimentoController extends Controller
     public function verifica()
     {
         $PersitenciaCaixa = new DaoCaixa();
+        $PersitenciaBico = new DaoBico();
+        $caixa = new CaixaModel();
+        $this->bicos=$PersitenciaBico->getAll();
+        
         $this->verifica=$PersitenciaCaixa->verifica();
+        // var_dump($this->verifica);
+       
+        $this->verifica==false?$id='':$id=$this->verifica[0]->getIdCaixa();
+
+       if($id!=''){
+              $this->getBicos();
+             $dados=$PersitenciaBico->getMovimentoBicos(@$id);
+             $q=count($_SESSION['bicos'])-count($dados);
+             for($i=4;$i>$q;$i--){
+                 array_shift($_SESSION['bicos']);
+             }
+             $this->historico="SIM";
+              if($q==0){
+                $this->updateCaixa($id);
+              }
+       }
+       
+   
     }
 
     public function getBicos()
     {
-        $PersitenciaBico = new DaoBico();
-        return $this->bicos=$PersitenciaBico->getAll();   
+        $PersitenciaBico = new DaoBico();      
+        $_SESSION['bicos']=$PersitenciaBico->getAll();               
                 
     }
 
@@ -38,20 +60,20 @@ class  MovimentoController extends Controller
         $caixa->setStatusCaixa(intval($_POST['statusCaixa'])); 
         $PersitenciaCaixa = new DaoCaixa();
         $retorno=$PersitenciaCaixa->create($caixa); 
-        $_SESSION['bicos']=$this->getBicos();
+        $this->getBicos();
         echo json_encode($retorno);
        }else{
-          
-           echo json_encode("Existe um Caixa sendo executado CAIXA->".$_SESSION['caixa']);
+           
+            echo json_encode("Existe um Caixa sendo executado CAIXA->".$_SESSION['caixa']);
        }
     }
 
-    public function updateCaixa()
+    public function updateCaixa($id)
     {
       
         $caixa = new CaixaModel();
         $caixa->setStatusCaixa(0); 
-        $caixa->setIdCaixa(intval($_SESSION['caixa']));
+        $caixa->setIdCaixa(intval($id));
         $PersitenciaCaixa = new DaoCaixa();
         $retorno=$PersitenciaCaixa->update($caixa);
         // session_destroy();      
@@ -59,23 +81,26 @@ class  MovimentoController extends Controller
 
     public function addFechamento()
     {
-       
+        if(!empty($_POST['fechamento'])){ 
         $HistoricoBico = new HistoricoBicoModel();
         $HistoricoBico->setFechamento($_POST['fechamento']);
         $HistoricoBico->setIdBico(intval($_POST['idBico'])); 
-        $HistoricoBico->setIdCaixa(intval($_SESSION['caixa']));
+        $HistoricoBico->setIdCaixa(intval($this->verifica[0]->getIdCaixa()));
         $PersitenciaHistoricoBico = new DaoHistoricoBico();
         $retorno=$PersitenciaHistoricoBico->create($HistoricoBico);
         $retorno='Inserido';
         if(count($_SESSION['bicos'])==0){                
-            updateCaixa($this->verifica);
+            $this->updateCaixa($this->verifica);
             
         }else{
             $retorno=$PersitenciaHistoricoBico->update($HistoricoBico);
             array_shift($_SESSION['bicos']);
         }
         echo json_encode($retorno);
-      
+    }else
+    {
+        echo json_encode("O campo Fechamento não pode ser vazio");
+    }
     }
 
     public function findMovimento($id)

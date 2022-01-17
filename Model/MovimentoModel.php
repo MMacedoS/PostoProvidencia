@@ -11,6 +11,7 @@ class  MovimentoModel
     private string $nomeBico;
     private string $nomeProduto;
     private float $valorProduto;
+    private float $totalBico;
 
 
     public function getIdMovimento(){return $this->idMovimento;}
@@ -22,6 +23,7 @@ class  MovimentoModel
     public function getNomeProduto(){return $this->nomeProduto;}
     public function getValorProduto(){return $this->valorProduto;}
     public function getNomeBico(){return $this->nomeBico;}
+    public function getTotalBico(){return $this->totalBico;}
     
     public function setIdMovimento($idMovimento)
     {
@@ -55,6 +57,10 @@ class  MovimentoModel
     } 
     public function setNomeBico($nomeBico){
         $this->nomeBico=$nomeBico;
+    }
+
+    public function setTotalBico($totalBico){
+        $this->totalBico=$totalBico;
     }
 }
 

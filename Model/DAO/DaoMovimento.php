@@ -53,7 +53,8 @@ class DaoMovimento implements iDaoModeCrud
                 'qtdoAberto' =>$object->getQtdoAberto(),
                 'nomeBico' =>$object->getNomeBico(),
                 'nomeProduto' =>$object->getNomeProduto(),
-                'valorProduto' =>$object->getValorProduto()
+                'valorProduto' =>$object->getValorProduto(),
+                'totalBico' =>$this->somarQtdo($object->getQtdoFechado(),$object->getQtdoAberto())
             ];
     }
     private function invertedata($data)
@@ -61,5 +62,14 @@ class DaoMovimento implements iDaoModeCrud
         $data=explode(" ",$data);
         return implode("/", array_reverse(explode("-",$data[0])))." ".$data[1];
     }
+    private function somarQtdo($fechado,$aberto)
+    {
+        $fechado=str_replace(".","",$fechado);
+        $fechado=str_replace(",",".",$fechado);
+        $aberto=str_replace(".","",$aberto);
+        $aberto=str_replace(",",".",$aberto);  
+        return floatval($fechado)- floatval($aberto);
+    }
+    
 }
 ?>

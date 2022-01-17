@@ -10,6 +10,7 @@ class Controller
     public $bicos;
     public $caixas;
     public $verifica;
+    public $historico;
     public function cadastro($arquivo)
     {
         require_once "View/pages/cadastro/".$arquivo.".php";

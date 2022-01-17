@@ -53,6 +53,23 @@ class DaoBico implements iDaoModeCrud{
            return $excecao->getMessage();
         }
      }
+
+     public function getMovimentoBicos($id){
+      $sqlStmt = "SELECT b.*,m.idCaixa FROM bico b inner JOIN movimento m on m.idBico=b.idBico where m.idCaixa='$id' GROUP by b.idBico";
+      $dados=[];
+      try {
+         $operacao = $this->instanciaConexaoAtiva->prepare($sqlStmt);         
+         $operacao->execute();
+         if($operacao->execute())
+         {
+            $dados=$operacao->fetchAll(PDO::FETCH_ASSOC);
+            return $dados;
+          }
+           
+      } catch( PDOException $excecao ){
+         return $excecao->getMessage();
+      }
+   }
      public function create($objeto){
          $nome = $objeto->getNomeBico();
          $idProduto=$objeto->getIdProduto();
