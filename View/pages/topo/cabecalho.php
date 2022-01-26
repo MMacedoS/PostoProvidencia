@@ -9,6 +9,8 @@
       <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> -->
       <link rel="stylesheet" href="<?=ROTA_CSS?>/style.css">
       <link rel="stylesheet" href="<?=ROTA_CSS?>/boxicons.min.css">
+      
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="sidebar">

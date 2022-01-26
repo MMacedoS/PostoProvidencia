@@ -134,7 +134,23 @@ class DaoPagamento implements iDaoModeCrud
         } catch( PDOException $excecao ){
            return $excecao->getMessage();
         }
-    }   
+    }  
+    
+    public function graficosPagamentos($mes)
+    {
+        $sqlStmt="SELECT sum(valorPagamento) as 'valor' FROM {$this->tabela} where month(dataPagamento)='$mes'";
+        $dados=[];
+        try {
+            $operacao = $this->instanciaConexaoAtiva->query($sqlStmt);         
+           $dados = $operacao->fetchAll(PDO::FETCH_ASSOC);
+             return $dados;
+            
+            
+            
+         } catch( PDOException $excecao ){
+            return $excecao->getMessage();
+         }
+    }
 
     private function getNewIdPagamento(){
         $sqlStmt = "SELECT MAX(idPagamento) AS id FROM {$this->tabela}";

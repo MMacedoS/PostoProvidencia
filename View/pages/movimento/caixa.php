@@ -203,8 +203,12 @@ $array=@$_SESSION['bicos'];
 // var_dump($array);
 echo is_null($array);
    
-    if(count($array)!=0){
+    if(!is_null($array)){
+        if (count($array)!=0) {
+            # code...
+        
         require_once ("historicoBico.php");
+        }
     }
 
 ?>

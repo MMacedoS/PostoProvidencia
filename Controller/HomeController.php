@@ -6,7 +6,7 @@ class HomeController extends Controller{
     {
        $PersitenciaBico = new DaoBico();
         $this->bicos=$PersitenciaBico->getAll();  
-                    
+        // $this->graficosPagamentos();        
       
     }
 
@@ -21,5 +21,18 @@ class HomeController extends Controller{
         echo "mensagem";
     }
 
+    public function graficosPagamentos()
+    {
+        $array=[];
+        for($i=1;$i<=12;$i++){
+        $PersitenciaPagamento = new DaoPagamento();
+        $this->dadosBuscados=$PersitenciaPagamento->graficosPagamentos($i);       
+           array_push($array,$this->dadosBuscados[0]);
+         }
+        // var_dump($array);
+        
+        echo json_encode($array);
+    }
+    
 }
 ?>
